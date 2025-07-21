@@ -27,6 +27,13 @@ import com.example.myapplication.data.MIGRATION_2_3
 import com.example.myapplication.data.MIGRATION_3_4
 import java.text.SimpleDateFormat
 import java.util.*
+import coil.compose.rememberAsyncImagePainter
+import android.net.Uri
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.window.Dialog
+import androidx.compose.foundation.Image
+import androidx.compose.ui.layout.ContentScale
 
 @Composable
 fun MealRecordScreen(
@@ -47,6 +54,7 @@ fun MealRecordScreen(
     val dailyWaterIntake by viewModel.dailyWaterIntake.collectAsState(initial = 0)
     var showAddDialog by remember { mutableStateOf(false) }
     var selectedMealType by remember { mutableStateOf("") }
+    var showDetailDialog by remember { mutableStateOf<MealRecord?>(null) }
     
     LaunchedEffect(Unit) {
         viewModel.loadTodayRecords()
@@ -110,7 +118,8 @@ fun MealRecordScreen(
             items(mealRecords) { record ->
                 MealRecordCard(
                     record = record,
-                    onDelete = { viewModel.deleteMealRecord(record) }
+                    onDelete = { viewModel.deleteMealRecord(record) },
+                    onClick = { showDetailDialog = record }
                 )
             }
         }
@@ -125,6 +134,13 @@ fun MealRecordScreen(
                 viewModel.addMealRecord(mealRecord)
                 showAddDialog = false
             }
+        )
+    }
+
+    if (showDetailDialog != null) {
+        MealRecordDetailDialog(
+            record = showDetailDialog!!,
+            onDismiss = { showDetailDialog = null }
         )
     }
 }
@@ -271,7 +287,8 @@ fun QuickAddButton(
 @Composable
 fun MealRecordCard(
     record: MealRecord,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onClick: () -> Unit = {}
 ) {
     val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
     val mealTypeText = when (record.mealType) {
@@ -283,7 +300,9 @@ fun MealRecordCard(
     }
     
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
         colors = CardDefaults.cardColors(
             containerColor = Color.White.copy(alpha = 0.9f)
         ),
@@ -364,4 +383,103 @@ fun MoodIcon(mood: String) {
         tint = color,
         modifier = Modifier.size(24.dp)
     )
+} 
+
+@Composable
+fun MealRecordDetailDialog(
+    record: MealRecord,
+    onDismiss: () -> Unit
+) {
+    Dialog(onDismissRequest = onDismiss) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp)
+            ) {
+                Text(
+                    text = "Meal Detail",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF1A237E),
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                Text(
+                    text = "Type: ${when (record.mealType) {
+                        "breakfast" -> "Breakfast"
+                        "lunch" -> "Lunch"
+                        "dinner" -> "Dinner"
+                        "snack" -> "Snack"
+                        else -> record.mealType
+                    }}",
+                    fontSize = 16.sp,
+                    color = Color(0xFF1A237E),
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = "Time: ${SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(record.timestamp)}",
+                    fontSize = 14.sp,
+                    color = Color(0xFF666666),
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                record.description?.let {
+                    if (it.isNotEmpty()) {
+                        Text(
+                            text = "Description: $it",
+                            fontSize = 14.sp,
+                            color = Color(0xFF888888),
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                    }
+                }
+                record.mood?.let {
+                    Text(
+                        text = "Mood: $it",
+                        fontSize = 14.sp,
+                        color = Color(0xFF888888),
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                }
+                if (!record.photoPath.isNullOrEmpty()) {
+                    val uri = try { Uri.parse(record.photoPath) } catch (e: Exception) { null }
+                    if (uri != null) {
+                        Image(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(180.dp)
+                                .padding(bottom = 8.dp),
+                            painter = rememberAsyncImagePainter(uri),
+                            contentDescription = "Meal photo",
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                }
+                Text(
+                    text = "Water Intake: ${record.waterIntake} ml",
+                    fontSize = 14.sp,
+                    color = Color(0xFF888888),
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    Button(
+                        onClick = onDismiss,
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF007AFF))
+                    ) {
+                        Text("Close")
+                    }
+                }
+            }
+        }
+    }
 } 

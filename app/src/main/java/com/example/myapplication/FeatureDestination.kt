@@ -16,7 +16,8 @@ data class FeatureDestination(
             FeatureDestination("My Memories", 6, "my_memories"),
             FeatureDestination("Sleep Tracking", 7, "sleep_tracker"),
             FeatureDestination("Settings/Caregiver", 8, "settings_caregiver"),
-            FeatureDestination("AI Assistant", 9, "ai_chat")
+            FeatureDestination("AI Assistant", 9, "ai_chat"),
+            FeatureDestination("Face Age Detection", 0, "face_age_detection")
         )
     }
 } 

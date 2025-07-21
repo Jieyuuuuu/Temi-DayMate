@@ -18,7 +18,16 @@ class AIRecognizer(
 
     fun startListening() {
         if (speechRecognizer == null) {
-            speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
+            try {
+                speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
+            } catch (e: Exception) {
+                onError?.invoke("Speech recognition service not available on this device.")
+                return
+            }
+            if (speechRecognizer == null) {
+                onError?.invoke("Speech recognition service not available on this device.")
+                return
+            }
             speechRecognizer?.setRecognitionListener(object : RecognitionListener {
                 override fun onReadyForSpeech(params: Bundle?) {}
                 override fun onBeginningOfSpeech() {}
@@ -67,7 +76,11 @@ class AIRecognizer(
     }
 
     fun destroy() {
-        speechRecognizer?.destroy()
+        try {
+            speechRecognizer?.destroy()
+        } catch (e: IllegalArgumentException) {
+            // 已經被系統回收或未註冊，忽略
+        }
         speechRecognizer = null
         isListening = false
     }

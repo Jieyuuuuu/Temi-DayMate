@@ -197,8 +197,8 @@ fun FeatureGrid(navController: NavController) {
         itemsIndexed(features) { index, feature ->
             FeatureButtonModern(
                 feature = feature,
-                brush = featureColors[index],
-                emoji = featureEmojis[index],
+                brush = featureColors[index % featureColors.size],
+                emoji = featureEmojis[index % featureEmojis.size],
                 onClick = { navController.navigate(feature.route) },
                 size = buttonSize
             )

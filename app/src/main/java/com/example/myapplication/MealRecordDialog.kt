@@ -29,6 +29,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.core.content.FileProvider
 import java.io.File
 import coil.compose.rememberAsyncImagePainter
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
 
 @Composable
 fun MealRecordDialog(
@@ -51,6 +54,17 @@ fun MealRecordDialog(
     val pickImageLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         if (uri != null) {
             photoUri = uri
+        }
+    }
+    // 權限請求 launcher
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+        if (isGranted) {
+            val photoFile = File.createTempFile("meal_photo_", ".jpg", context.cacheDir)
+            val uri = FileProvider.getUriForFile(context, context.packageName + ".provider", photoFile)
+            cameraImageUri.value = uri
+            takePictureLauncher.launch(uri)
+        } else {
+            // 可選：顯示權限被拒絕訊息
         }
     }
     
@@ -115,11 +129,15 @@ fun MealRecordDialog(
                 ) {
                     Button(
                         onClick = {
-                            // 建立暫存檔案 Uri
-                            val photoFile = File.createTempFile("meal_photo_", ".jpg", context.cacheDir)
-                            val uri = FileProvider.getUriForFile(context, context.packageName + ".provider", photoFile)
-                            cameraImageUri.value = uri
-                            takePictureLauncher.launch(uri)
+                            val cameraPermission = Manifest.permission.CAMERA
+                            if (ContextCompat.checkSelfPermission(context, cameraPermission) == PackageManager.PERMISSION_GRANTED) {
+                                val photoFile = File.createTempFile("meal_photo_", ".jpg", context.cacheDir)
+                                val uri = FileProvider.getUriForFile(context, context.packageName + ".provider", photoFile)
+                                cameraImageUri.value = uri
+                                takePictureLauncher.launch(uri)
+                            } else {
+                                cameraPermissionLauncher.launch(cameraPermission)
+                            }
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF007AFF))
                     ) {

@@ -116,17 +116,66 @@ fun MainNavHost() {
     }
     
     NavHost(navController = navController, startDestination = "home") {
-        composable("home") { HomeScreen(navController) }
-        composable("daily_schedule") { MyScheduleScreen() }
-        composable("ai_chat") { AIChatScreen(aiContextManager) }
-        composable("medication_reminder") { MedicationReminderScreen(medicationRepository) }
-        composable("meal_record") { MealRecordScreen(navController) }
-        composable("exercise_wall") { PlaceholderScreen("Exercise & Wall") }
-        composable("socialize") { PlaceholderScreen("Social") }
-        composable("memory_games") { PlaceholderScreen("Memory Game") }
-        composable("my_memories") { PlaceholderScreen("My Memories") }
-        composable("sleep_tracker") { PlaceholderScreen("Sleep Tracking") }
-        composable("settings_caregiver") { PlaceholderScreen("Settings/Caregiver") }
+        composable("home") {
+            AppScaffold(navController, title = "Home") {
+                HomeScreen(navController)
+            }
+        }
+        composable("daily_schedule") {
+            AppScaffold(navController, title = "My Schedule") {
+                MyScheduleScreen()
+            }
+        }
+        composable("ai_chat") {
+            AppScaffold(navController, title = "AI Assistant") {
+                AIChatScreen(aiContextManager)
+            }
+        }
+        composable("medication_reminder") {
+            AppScaffold(navController, title = "Medication Reminder") {
+                MedicationReminderScreen(medicationRepository)
+            }
+        }
+        composable("meal_record") {
+            AppScaffold(navController, title = "Meal Record") {
+                MealRecordScreen(navController)
+            }
+        }
+        composable("exercise_wall") {
+            AppScaffold(navController, title = "Exercise & Wall") {
+                PlaceholderScreen("Exercise & Wall")
+            }
+        }
+        composable("socialize") {
+            AppScaffold(navController, title = "Social") {
+                PlaceholderScreen("Social")
+            }
+        }
+        composable("memory_games") {
+            AppScaffold(navController, title = "Memory Game") {
+                PlaceholderScreen("Memory Game")
+            }
+        }
+        composable("my_memories") {
+            AppScaffold(navController, title = "My Memories") {
+                PlaceholderScreen("My Memories")
+            }
+        }
+        composable("sleep_tracker") {
+            AppScaffold(navController, title = "Sleep Tracking") {
+                PlaceholderScreen("Sleep Tracking")
+            }
+        }
+        composable("settings_caregiver") {
+            AppScaffold(navController, title = "Settings/Caregiver") {
+                PlaceholderScreen("Settings/Caregiver")
+            }
+        }
+        composable("face_age_detection") {
+            AppScaffold(navController, title = "Face Age Detection") {
+                FaceAgeDetectionScreen()
+            }
+        }
     }
 }
 
@@ -147,6 +196,7 @@ fun MyScheduleScreen() {
     var showDialog by remember { mutableStateOf(false) }
     var newTitle by remember { mutableStateOf("") }
     var newTime by remember { mutableStateOf("") }
+    var deleteTarget by remember { mutableStateOf<ScheduleEntity?>(null) }
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -174,7 +224,7 @@ fun MyScheduleScreen() {
                         ScheduleCard(
                             item,
                             onDone = { vm.markDone(item) },
-                            onDelete = { vm.removeSchedule(item) }
+                            onDelete = { deleteTarget = item }
                         )
                     }
                 }
@@ -226,6 +276,23 @@ fun MyScheduleScreen() {
                     }
                 )
             }
+            // 刪除確認對話框
+            if (deleteTarget != null) {
+                AlertDialog(
+                    onDismissRequest = { deleteTarget = null },
+                    title = { Text("Delete Schedule") },
+                    text = { Text("Are you sure you want to delete this schedule?\n${deleteTarget?.title}") },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            vm.removeSchedule(deleteTarget!!)
+                            deleteTarget = null
+                        }) { Text("Delete", color = Color.Red) }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { deleteTarget = null }) { Text("Cancel") }
+                    }
+                )
+            }
         }
     }
 }
@@ -253,7 +320,7 @@ fun ScheduleCard(item: ScheduleEntity, onDone: () -> Unit, onDelete: () -> Unit)
                 Text(text = item.icon, fontSize = 24.sp)
             }
             Spacer(modifier = Modifier.width(16.dp))
-            Column(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(text = item.title, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color(0xFF222B45))
                 Text(text = item.time, fontSize = 14.sp, color = Color(0xFF5A5A89))
                 if (item.note.isNotBlank()) {
@@ -266,8 +333,11 @@ fun ScheduleCard(item: ScheduleEntity, onDone: () -> Unit, onDelete: () -> Unit)
                     Icon(Icons.Default.CheckCircle, contentDescription = "Done", tint = Color(0xFF4CAF50))
                 }
             }
-            IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = "Delete", tint = Color(0xFFF44336))
+            IconButton(
+                onClick = onDelete,
+                modifier = Modifier.size(48.dp)
+            ) {
+                Icon(Icons.Default.Delete, contentDescription = "Delete", tint = Color.Red, modifier = Modifier.size(32.dp))
             }
         }
     }

@@ -67,4 +67,13 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
     implementation("io.coil-kt:coil-compose:2.5.0")
+    
+    // CameraX 依賴
+    implementation("androidx.camera:camera-core:1.3.3")
+    implementation("androidx.camera:camera-camera2:1.3.3")
+    implementation("androidx.camera:camera-lifecycle:1.3.3")
+    implementation("androidx.camera:camera-view:1.3.3")
+    implementation("androidx.camera:camera-extensions:1.3.3")
+    // ML Kit 臉部偵測
+    implementation("com.google.mlkit:face-detection:16.1.5")
 }
