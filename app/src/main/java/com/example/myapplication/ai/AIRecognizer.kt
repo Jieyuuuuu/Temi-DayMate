@@ -79,7 +79,7 @@ class AIRecognizer(
         try {
             speechRecognizer?.destroy()
         } catch (e: IllegalArgumentException) {
-            // 已經被系統回收或未註冊，忽略
+            // Already released or not registered; ignore
         }
         speechRecognizer = null
         isListening = false

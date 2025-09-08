@@ -58,7 +58,7 @@ fun FaceAgeDetectionScreen() {
             permissionLauncher.launch(Manifest.permission.CAMERA)
         }
     }
-    // 狀態：臉部框座標
+    // State: face bounding box
     var faceRects by remember { mutableStateOf<List<android.graphics.Rect>>(emptyList()) }
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         if (hasCameraPermission) {
@@ -99,7 +99,7 @@ fun CameraFaceDetectionView(lifecycleOwner: LifecycleOwner, faceRects: List<andr
                             .addOnSuccessListener { faces ->
                                 val rects = faces.map { it.boundingBox }
                                 onFacesDetected(rects)
-                                // 僅在偵測到臉部時顯示 Toast，且只在此畫面
+                                // Show Toast only when a face is detected and only on this screen
                                 if (faces.isNotEmpty() && ctx is android.app.Activity && ctx.hasWindowFocus()) {
                                     Toast.makeText(ctx, "Face detected! (age: TODO)", Toast.LENGTH_SHORT).show()
                                 }
@@ -127,12 +127,12 @@ fun CameraFaceDetectionView(lifecycleOwner: LifecycleOwner, faceRects: List<andr
         },
         modifier = Modifier.fillMaxSize()
     )
-    // 疊加臉部框
+    // Overlay face bounding box
     androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
         val canvasWidth = size.width
         val canvasHeight = size.height
         for (rect in faceRects) {
-            // 將 rect 轉換到 Compose 畫布座標（假設640x480預覽），修正左右顛倒
+            // Map rect to Compose canvas coordinates (assuming 640x480 preview), fix left-right flip
             val scaleX = canvasWidth / 640f
             val scaleY = canvasHeight / 480f
             val left = (640 - rect.right) * scaleX

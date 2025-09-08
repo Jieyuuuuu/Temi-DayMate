@@ -2,7 +2,7 @@ package com.example.myapplication
 
 data class FeatureDestination(
     val name: String,
-    val iconType: Int, // 0:圓, 1:方, 2:三角, 3:星, 4:心, 5:橢圓, 6:菱形, 7:六角, 8:半圓
+    val iconType: Int, // 0:circle, 1:square, 2:triangle, 3:star, 4:heart, 5:oval, 6:diamond, 7:hexagon, 8:semicircle
     val route: String
 ) {
     companion object {
@@ -10,7 +10,7 @@ data class FeatureDestination(
             FeatureDestination("My Schedule", 0, "daily_schedule"),
             FeatureDestination("Medication Reminder", 1, "medication_reminder"),
             FeatureDestination("Meal Record", 2, "meal_record"),
-            FeatureDestination("Exercise & Wall", 3, "exercise_wall"),
+            FeatureDestination("Exercise Coach", 3, "exercise_coach"),
             FeatureDestination("Social", 4, "socialize"),
             FeatureDestination("Memory Game", 5, "memory_games"),
             FeatureDestination("My Memories", 6, "my_memories"),

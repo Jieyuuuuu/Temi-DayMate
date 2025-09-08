@@ -52,23 +52,23 @@ class MedicationNotificationService {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             
-            // 解析時間
+            // Parse time
             val timeParts = medication.reminderTime.split(":")
             val hour = timeParts.getOrNull(0)?.toIntOrNull() ?: 8
             val minute = timeParts.getOrNull(1)?.toIntOrNull() ?: 0
             
-            // 設定今天的提醒時間
+            // Set today's reminder time
             val calendar = Calendar.getInstance()
             calendar.set(Calendar.HOUR_OF_DAY, hour)
             calendar.set(Calendar.MINUTE, minute)
             calendar.set(Calendar.SECOND, 0)
             
-            // 如果時間已過，設定為明天
+            // If time has passed, schedule for tomorrow
             if (calendar.timeInMillis <= System.currentTimeMillis()) {
                 calendar.add(Calendar.DAY_OF_YEAR, 1)
             }
             
-            // 設定重複提醒（每天）
+            // Set repeating alarm (daily)
             alarmManager.setRepeating(
                 android.app.AlarmManager.RTC_WAKEUP,
                 calendar.timeInMillis,
@@ -102,7 +102,7 @@ class MedicationReminderReceiver : BroadcastReceiver() {
         val medicationDosage = intent.getStringExtra("medication_dosage") ?: ""
         val medicationTime = intent.getStringExtra("medication_time") ?: ""
         
-        // 創建通知
+        // Build notification
         val notificationIntent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
@@ -130,7 +130,7 @@ class MedicationReminderReceiver : BroadcastReceiver() {
             .setContentIntent(pendingIntent)
             .build()
         
-        // 顯示通知
+        // Show notification
         NotificationManagerCompat.from(context).notify(medicationId, notification)
     }
 } 

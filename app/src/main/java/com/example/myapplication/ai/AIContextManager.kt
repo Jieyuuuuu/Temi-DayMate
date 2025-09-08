@@ -22,23 +22,23 @@ class AIContextManager(
     private val scope = CoroutineScope(Dispatchers.IO)
     
     init {
-        // 註冊模組
+        // Register modules
         registerModules()
         
-        // 定期更新上下文
+        // Periodically update context
         startContextUpdates()
     }
     
     private fun registerModules() {
-        // 這裡會在 MainActivity 中註冊實際的模組
-        // 例如：moduleRegistry.registerModule("schedule", scheduleModuleProvider)
+        // Actual module registration happens in MainActivity
+        // e.g. moduleRegistry.registerModule("schedule", scheduleModuleProvider)
     }
     
     private fun startContextUpdates() {
         scope.launch {
             while (true) {
                 updateContext()
-                kotlinx.coroutines.delay(30000) // 每30秒更新一次
+                kotlinx.coroutines.delay(30000) // Update every 30 seconds
             }
         }
     }
@@ -115,12 +115,12 @@ class AIContextManager(
     }
     
     private fun isWifiConnected(): Boolean {
-        // 簡化實現，實際應該檢查 WiFi 連接狀態
+        // Simplified: in reality, check Wi-Fi connection
         return true
     }
     
     private fun isMobileConnected(): Boolean {
-        // 簡化實現，實際應該檢查行動網路連接狀態
+        // Simplified: in reality, check mobile data connection
         return false
     }
     
@@ -145,7 +145,7 @@ class AIContextManager(
         val updatedActivities = currentContext.recentActivities.toMutableList()
         updatedActivities.add(activity)
         
-        // 只保留最近100個活動
+        // Keep only the latest 100 activities
         if (updatedActivities.size > 100) {
             updatedActivities.removeAt(0)
         }
@@ -161,7 +161,7 @@ class AIContextManager(
         val updatedHistory = currentContext.conversationHistory.toMutableList()
         updatedHistory.add(entry)
         
-        // 只保留最近50個對話
+        // Keep only the latest 50 conversations
         if (updatedHistory.size > 50) {
             updatedHistory.removeAt(0)
         }

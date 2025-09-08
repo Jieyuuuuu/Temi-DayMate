@@ -28,7 +28,7 @@ class ScheduleModuleProvider(
         dataMap["completedSchedules"] = completedCount
         dataMap["todaySchedules"] = todaySchedules.size
         dataMap["completionRate"] = if (totalCount > 0) (completedCount.toFloat() / totalCount) else 0f
-        dataMap["nextSchedule"] = schedules.firstOrNull { schedule -> schedule.status != "DONE" }?.title ?: "無"
+        dataMap["nextSchedule"] = schedules.firstOrNull { schedule -> schedule.status != "DONE" }?.title ?: "None"
         dataMap["schedules"] = scheduleList
         return ModuleData(
             moduleName = "My Schedule",
@@ -55,7 +55,7 @@ class ScheduleModuleProvider(
         return listOf(
             ModuleAction(
                 actionName = "addSchedule",
-                description = "新增行程",
+                description = "Add schedule",
                 parameters = mapOf(
                     "title" to "",
                     "time" to ""
@@ -64,7 +64,7 @@ class ScheduleModuleProvider(
             ),
             ModuleAction(
                 actionName = "completeSchedule",
-                description = "完成行程",
+                description = "Complete schedule",
                 parameters = mapOf(
                     "scheduleId" to ""
                 ),
@@ -72,7 +72,7 @@ class ScheduleModuleProvider(
             ),
             ModuleAction(
                 actionName = "deleteSchedule",
-                description = "刪除行程",
+                description = "Delete schedule",
                 parameters = mapOf(
                     "scheduleId" to ""
                 ),
@@ -80,7 +80,7 @@ class ScheduleModuleProvider(
             ),
             ModuleAction(
                 actionName = "viewTodaySchedules",
-                description = "查看今日行程",
+                description = "View today's schedules",
                 parameters = emptyMap(),
                 isAvailable = true
             )
@@ -93,7 +93,7 @@ class ScheduleModuleProvider(
         val contextMap = mutableMapOf<String, Any>()
         contextMap["moduleName"] = "My Schedule"
         contextMap["todaySchedules"] = todaySchedules.size
-        contextMap["nextSchedule"] = nextSchedule?.title ?: "無"
+        contextMap["nextSchedule"] = nextSchedule?.title ?: "None"
         contextMap["nextScheduleTime"] = nextSchedule?.time ?: ""
         contextMap["completionRate"] = if (schedules.isNotEmpty()) {
             schedules.count { schedule -> schedule.status == "DONE" }.toFloat() / schedules.size

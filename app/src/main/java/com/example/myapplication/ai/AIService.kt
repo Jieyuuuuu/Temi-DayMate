@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import com.example.myapplication.ScheduleEntity
 
-// AI 服務核心介面
+// AI service core interface
 interface AIService {
     suspend fun processUserQuery(query: String, context: UserContext): AIResponse
     suspend fun getContextualResponse(context: UserContext): AIResponse
@@ -12,7 +12,7 @@ interface AIService {
     fun getContextFlow(): StateFlow<UserContext>
 }
 
-// AI 回應結構
+// AI response structure
 data class AIResponse(
     val response: String,
     val confidence: Float,
@@ -20,7 +20,7 @@ data class AIResponse(
     val contextUsed: List<String>
 )
 
-// 建議動作
+// Suggested actions
 data class SuggestedAction(
     val action: String,
     val module: String,
@@ -28,7 +28,7 @@ data class SuggestedAction(
     val priority: Int
 )
 
-// 用戶上下文
+// User context
 data class UserContext(
     val currentTime: Long = System.currentTimeMillis(),
     val userProfile: UserProfile? = null,
@@ -42,7 +42,7 @@ data class UserContext(
     val conversationHistory: List<ConversationEntry> = emptyList()
 )
 
-// 用戶資料
+// User profile
 data class UserProfile(
     val userId: String,
     val name: String,
@@ -51,7 +51,7 @@ data class UserProfile(
     val medicalConditions: List<String>
 )
 
-// 活動記錄
+// Activity log
 data class Activity(
     val id: String,
     val type: String,
@@ -60,7 +60,7 @@ data class Activity(
     val data: Map<String, Any>
 )
 
-// 裝置資訊
+// Device info
 data class DeviceInfo(
     val batteryLevel: Int = 100,
     val isCharging: Boolean = false,
@@ -68,7 +68,7 @@ data class DeviceInfo(
     val screenBrightness: Int = 128
 )
 
-// 位置資訊
+// Location info
 data class Location(
     val latitude: Double,
     val longitude: Double,
@@ -76,7 +76,7 @@ data class Location(
     val timestamp: Long
 )
 
-// 健康資料
+// Health data
 data class HealthData(
     val heartRate: Int?,
     val steps: Int,
@@ -84,7 +84,7 @@ data class HealthData(
     val mood: String?
 )
 
-// 模組狀態
+// Module state
 data class ModuleState(
     val moduleName: String,
     val isActive: Boolean,
@@ -92,7 +92,7 @@ data class ModuleState(
     val data: Map<String, Any>
 )
 
-// 對話記錄
+// Conversation history
 data class ConversationEntry(
     val timestamp: Long,
     val userInput: String,

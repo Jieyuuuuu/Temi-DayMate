@@ -36,7 +36,7 @@ fun MedicationReminderScreen(
     var selectedMedication by remember { mutableStateOf<MedicationEntity?>(null) }
     val scope = rememberCoroutineScope()
     
-    // 初始化通知頻道
+    // Initialize notification channel (unused in temi build)
     LaunchedEffect(Unit) {
         MedicationNotificationService.createNotificationChannel(context)
     }
@@ -109,7 +109,7 @@ fun MedicationReminderScreen(
                     },
                     onDelete = {
                         scope.launch {
-                            // 取消系統提醒
+                            // Cancel system reminder
                             MedicationNotificationService.cancelMedicationReminder(context, medication.id)
                             medicationRepository.deleteMedication(medication)
                         }
@@ -119,7 +119,7 @@ fun MedicationReminderScreen(
                             val updatedMedication = medication.copy(isActive = !medication.isActive)
                             medicationRepository.updateMedication(updatedMedication)
                             
-                            // 管理系統提醒
+                            // Manage system reminder
                             if (updatedMedication.isActive) {
                                 MedicationNotificationService.scheduleMedicationReminder(context, updatedMedication)
                             } else {
@@ -150,7 +150,7 @@ fun MedicationReminderScreen(
                     )
                     val insertedId = medicationRepository.insertMedication(newMedication)
                     
-                    // 設定系統提醒
+                    // Schedule system reminder
                     val medicationWithId = newMedication.copy(id = insertedId.toInt())
                     MedicationNotificationService.scheduleMedicationReminder(context, medicationWithId)
                     
@@ -179,7 +179,7 @@ fun MedicationReminderScreen(
                         )
                         medicationRepository.updateMedication(updatedMedication)
                         
-                        // 重新設定系統提醒
+                        // Re-schedule system reminder
                         if (updatedMedication.isActive) {
                             MedicationNotificationService.cancelMedicationReminder(context, medication.id)
                             MedicationNotificationService.scheduleMedicationReminder(context, updatedMedication)

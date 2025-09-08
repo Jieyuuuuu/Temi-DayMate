@@ -125,7 +125,7 @@ fun MealRecordScreen(
         }
     }
     
-    // 新增記錄對話框
+    // Add record dialog
     if (showAddDialog) {
         MealRecordDialog(
             mealType = selectedMealType,

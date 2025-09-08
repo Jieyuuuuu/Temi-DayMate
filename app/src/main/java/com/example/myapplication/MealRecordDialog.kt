@@ -44,7 +44,7 @@ fun MealRecordDialog(
     var waterIntake by remember { mutableStateOf(0) }
     var photoUri by remember { mutableStateOf<Uri?>(null) }
     val context = LocalContext.current
-    // 拍照與選圖 launcher
+    // Camera and picker launcher
     val cameraImageUri = remember { mutableStateOf<Uri?>(null) }
     val takePictureLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success) {
@@ -56,7 +56,7 @@ fun MealRecordDialog(
             photoUri = uri
         }
     }
-    // 權限請求 launcher
+    // Permission request launcher
     val cameraPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
         if (isGranted) {
             val photoFile = File.createTempFile("meal_photo_", ".jpg", context.cacheDir)
@@ -64,7 +64,7 @@ fun MealRecordDialog(
             cameraImageUri.value = uri
             takePictureLauncher.launch(uri)
         } else {
-            // 可選：顯示權限被拒絕訊息
+            // Optional: show permission denied message
         }
     }
     

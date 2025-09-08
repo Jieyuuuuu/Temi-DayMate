@@ -126,7 +126,7 @@ fun TimePickerDialog(
     onTimeSelected: (hour: Int, minute: Int) -> Unit,
     initialTime: String = "08:00"
 ) {
-    // 解析初始時間
+    // Parse initial time
     val timeParts = initialTime.split(":")
     val initialHour = timeParts.getOrNull(0)?.toIntOrNull() ?: 8
     val initialMinute = timeParts.getOrNull(1)?.toIntOrNull() ?: 0
@@ -146,7 +146,7 @@ fun TimePickerDialog(
                     .padding(vertical = 16.dp),
                 horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
             ) {
-                // 顯示當前選擇的時間
+                // Show current selected time
                 Text(
                     text = String.format("Selected: %02d:%02d", selectedHour, selectedMinute),
                     style = MaterialTheme.typography.headlineSmall,
@@ -156,7 +156,7 @@ fun TimePickerDialog(
                 
                 Spacer(modifier = Modifier.height(16.dp))
                 
-                // Hour Picker - 使用更簡潔的設計
+                // Hour Picker - simplified design
                 Text("Hour", style = MaterialTheme.typography.labelMedium)
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -190,7 +190,7 @@ fun TimePickerDialog(
                 
                 Spacer(modifier = Modifier.height(16.dp))
                 
-                // Minute Picker - 支援所有分鐘
+                // Minute Picker - support all minutes
                 Text("Minute", style = MaterialTheme.typography.labelMedium)
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),

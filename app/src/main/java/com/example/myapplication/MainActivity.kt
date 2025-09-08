@@ -46,10 +46,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Button
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
+// remove system notification sound; use built-in generated beep instead
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
@@ -61,6 +63,9 @@ import com.example.myapplication.data.AppDatabase
 import com.example.myapplication.data.MIGRATION_2_3
 import com.example.myapplication.data.MIGRATION_3_4
 import com.example.myapplication.data.MedicationRepository
+import com.example.myapplication.MemoryGameScreen
+import com.example.myapplication.SocializeScreen
+import com.example.myapplication.ExerciseCoachScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,14 +84,14 @@ class MainActivity : ComponentActivity() {
 fun MainNavHost() {
     val navController = rememberNavController()
     
-    // AI 服務初始化
+    // AI services initialization
     val context = LocalContext.current
     val db = remember {
         Room.databaseBuilder(
             context.applicationContext,
             AppDatabase::class.java,
             "app-db"
-        ).addMigrations(MIGRATION_2_3, MIGRATION_3_4).fallbackToDestructiveMigration().build()
+        ).addMigrations(MIGRATION_2_3, MIGRATION_3_4, com.example.myapplication.data.MIGRATION_4_5).fallbackToDestructiveMigration().build()
     }
     val scheduleRepository = remember { ScheduleRepository(db.scheduleDao()) }
     val medicationRepository = remember { MedicationRepository(db.medicationDao()) }
@@ -95,7 +100,7 @@ fun MainNavHost() {
     val scheduleModuleProvider = remember { ScheduleModuleProvider(scheduleRepository) }
     val aiService = remember { 
         GeminiAIService(
-            apiKey = "AIzaSyCfIA23X1eSo0kH7K58QnHn8x3YdnViA_s",
+            apiKey = "", // Set your Gemini API key via README instructions
             moduleRegistry = moduleRegistry,
             scheduleRepository = scheduleRepository,
             medicationRepository = medicationRepository,
@@ -110,79 +115,86 @@ fun MainNavHost() {
         )
     }
     
-    // 註冊模組
+    // Register modules
     LaunchedEffect(Unit) {
         moduleRegistry.registerModule("schedule", scheduleModuleProvider)
     }
     
-    NavHost(navController = navController, startDestination = "home") {
-        composable("home") {
-            AppScaffold(navController, title = "Home") {
-                HomeScreen(navController)
+    Box(Modifier.fillMaxSize()) {
+        NavHost(navController = navController, startDestination = "home") {
+            composable("home") {
+                AppScaffold(navController, title = "Home") {
+                    HomeScreen(navController)
+                }
+            }
+            composable("daily_schedule") {
+                AppScaffold(navController, title = "My Schedule") {
+                    MyScheduleScreen()
+                }
+            }
+            composable("ai_chat") {
+                AppScaffold(navController, title = "AI Assistant") {
+                    AIChatScreen(aiContextManager)
+                }
+            }
+            composable("medication_reminder") {
+                AppScaffold(navController, title = "Medication Reminder") {
+                    MedicationReminderScreen(medicationRepository)
+                }
+            }
+            composable("meal_record") {
+                AppScaffold(navController, title = "Meal Record") {
+                    MealRecordScreen(navController)
+                }
+            }
+            composable("exercise_coach") {
+                AppScaffold(navController, title = "Exercise Coach") {
+                    ExerciseCoachScreen(navController)
+                }
+            }
+            composable("socialize") {
+                AppScaffold(navController, title = "Social") {
+                    SocializeScreen(navController)
+                }
+            }
+            composable("memory_games") {
+                AppScaffold(navController, title = "Memory Game") {
+                    MemoryGameScreen(navController)
+                }
+            }
+            composable("my_memories") {
+                AppScaffold(navController, title = "My Memories") {
+                    MyMemoriesScreen()
+                }
+            }
+            composable("sleep_tracker") {
+                AppScaffold(navController, title = "Sleep Tracking") {
+                    PlaceholderScreen("Sleep Tracking")
+                }
+            }
+            composable("settings_caregiver") {
+                AppScaffold(navController, title = "Settings/Caregiver") {
+                    PlaceholderScreen("Settings/Caregiver")
+                }
+            }
+            composable("face_age_detection") {
+                AppScaffold(navController, title = "Face Age Detection") {
+                    FaceAgeDetectionScreen()
+                }
             }
         }
-        composable("daily_schedule") {
-            AppScaffold(navController, title = "My Schedule") {
-                MyScheduleScreen()
-            }
-        }
-        composable("ai_chat") {
-            AppScaffold(navController, title = "AI Assistant") {
-                AIChatScreen(aiContextManager)
-            }
-        }
-        composable("medication_reminder") {
-            AppScaffold(navController, title = "Medication Reminder") {
-                MedicationReminderScreen(medicationRepository)
-            }
-        }
-        composable("meal_record") {
-            AppScaffold(navController, title = "Meal Record") {
-                MealRecordScreen(navController)
-            }
-        }
-        composable("exercise_wall") {
-            AppScaffold(navController, title = "Exercise & Wall") {
-                PlaceholderScreen("Exercise & Wall")
-            }
-        }
-        composable("socialize") {
-            AppScaffold(navController, title = "Social") {
-                PlaceholderScreen("Social")
-            }
-        }
-        composable("memory_games") {
-            AppScaffold(navController, title = "Memory Game") {
-                PlaceholderScreen("Memory Game")
-            }
-        }
-        composable("my_memories") {
-            AppScaffold(navController, title = "My Memories") {
-                PlaceholderScreen("My Memories")
-            }
-        }
-        composable("sleep_tracker") {
-            AppScaffold(navController, title = "Sleep Tracking") {
-                PlaceholderScreen("Sleep Tracking")
-            }
-        }
-        composable("settings_caregiver") {
-            AppScaffold(navController, title = "Settings/Caregiver") {
-                PlaceholderScreen("Settings/Caregiver")
-            }
-        }
-        composable("face_age_detection") {
-            AppScaffold(navController, title = "Face Age Detection") {
-                FaceAgeDetectionScreen()
-            }
-        }
+
+        InAppReminderHost(
+            scheduleRepository = scheduleRepository,
+            medicationRepository = medicationRepository
+        )
     }
 }
 
 @Composable
 fun MyScheduleScreen() {
     val context = LocalContext.current
-    // 單例 Room DB
+    // Singleton Room DB
     val db = remember {
         Room.databaseBuilder(
             context.applicationContext,
@@ -259,7 +271,7 @@ fun MyScheduleScreen() {
                                 if (newTitle.isNotBlank() && newTime.isNotBlank()) {
                                     vm.addSchedule(
                                         ScheduleEntity(
-                                            id = 0, // 使用 0，因為有 autoGenerate = true
+                                            id = 0, // Use 0 because autoGenerate = true
                                             title = newTitle,
                                             time = newTime
                                         )
@@ -276,7 +288,7 @@ fun MyScheduleScreen() {
                     }
                 )
             }
-            // 刪除確認對話框
+            // Delete confirmation dialog
             if (deleteTarget != null) {
                 AlertDialog(
                     onDismissRequest = { deleteTarget = null },
@@ -292,6 +304,44 @@ fun MyScheduleScreen() {
                         TextButton(onClick = { deleteTarget = null }) { Text("Cancel") }
                     }
                 )
+            }
+
+            // Test buttons: bottom-start to avoid overlapping the FAB
+            Row(
+                modifier = Modifier.align(Alignment.BottomStart).padding(24.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Button(onClick = {
+                    // Play app built-in beep (not Android system sound)
+                    SoundUtil.playBeep()
+                    InAppReminderController.trigger(
+                        InAppReminderEvent.MedicationEvent(
+                            com.example.myapplication.data.MedicationEntity(
+                                id = -101,
+                                name = "Test Medication",
+                                dosage = "1 pill",
+                                reminderTime = "12:00",
+                                note = null,
+                                isActive = true,
+                                createdAt = System.currentTimeMillis()
+                            )
+                        )
+                    )
+                }) { Text("Test Medication Reminder") }
+
+                Button(onClick = {
+                    // Play app built-in beep (not Android system sound)
+                    SoundUtil.playBeep()
+                    InAppReminderController.trigger(
+                        InAppReminderEvent.ScheduleEvent(
+                            ScheduleEntity(
+                                id = -202,
+                                title = "Test Schedule",
+                                time = "12:00"
+                            )
+                        )
+                    )
+                }) { Text("Test Schedule Reminder") }
             }
         }
     }

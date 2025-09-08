@@ -24,7 +24,7 @@ class GeminiAIService(
     private val moduleRegistry: ModuleRegistry,
     private val scheduleRepository: ScheduleRepository,
     private val medicationRepository: MedicationRepository,
-    private val mealRepository: MealRepository // 新增
+    private val mealRepository: MealRepository // added
 ) : AIService {
     
     private val contextFlow = MutableStateFlow(UserContext())
@@ -85,7 +85,7 @@ class GeminiAIService(
         // Dynamic retrieval based on query keywords
         val relevantScheduleItems: List<ScheduleEntity> = if (query.contains("schedule", ignoreCase = true) ||
                                        query.contains("today", ignoreCase = true) ||
-                                       query.contains("行程", ignoreCase = true)) {
+                                       query.contains("schedule", ignoreCase = true)) {
             schedules
         } else {
             emptyList()
@@ -95,8 +95,8 @@ class GeminiAIService(
                                      query.contains("medicine", ignoreCase = true) ||
                                      query.contains("pill", ignoreCase = true) ||
                                      query.contains("drug", ignoreCase = true) ||
-                                     query.contains("藥物", ignoreCase = true) ||
-                                     query.contains("藥", ignoreCase = true)) {
+                                    query.contains("medication", ignoreCase = true) ||
+                                    query.contains("medicine", ignoreCase = true)) {
             medications
         } else {
             emptyList()
@@ -109,8 +109,8 @@ class GeminiAIService(
                                          query.contains("dinner", ignoreCase = true) ||
                                          query.contains("snack", ignoreCase = true) ||
                                          query.contains("water", ignoreCase = true) ||
-                                         query.contains("飲食", ignoreCase = true) ||
-                                         query.contains("餐", ignoreCase = true)) {
+                                        query.contains("meal", ignoreCase = true) ||
+                                        query.contains("food", ignoreCase = true)) {
             meals
         } else {
             emptyList()

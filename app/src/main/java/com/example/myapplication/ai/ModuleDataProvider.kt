@@ -1,6 +1,6 @@
 package com.example.myapplication.ai
 
-// 模組資料提供者介面
+// Module data provider interface
 interface ModuleDataProvider {
     suspend fun getModuleData(): ModuleData
     suspend fun getModuleState(): ModuleState
@@ -8,7 +8,7 @@ interface ModuleDataProvider {
     suspend fun getModuleContext(): Map<String, Any>
 }
 
-// 模組資料
+// Module data
 data class ModuleData(
     val moduleName: String,
     val data: Map<String, Any>,
@@ -17,7 +17,7 @@ data class ModuleData(
     val dataType: String
 )
 
-// 模組動作
+// Module actions
 data class ModuleAction(
     val actionName: String,
     val description: String,
@@ -25,7 +25,7 @@ data class ModuleAction(
     val isAvailable: Boolean
 )
 
-// 模組註冊器
+// Module registry
 class ModuleRegistry {
     private val modules = mutableMapOf<String, ModuleDataProvider>()
     

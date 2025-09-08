@@ -60,18 +60,18 @@ fun HomeScreen(navController: NavController) {
     var currentTime by remember { mutableStateOf("") }
     var currentDate by remember { mutableStateOf("") }
     
-    // 實時更新時間
+    // Realtime clock
     LaunchedEffect(Unit) {
         while (true) {
             val now = Calendar.getInstance()
-            // 使用12小時制，更符合一般使用習慣
+            // Use 12-hour format (more user-friendly)
             val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
             val dateFormat = SimpleDateFormat("EEEE, MMMM d", Locale.getDefault())
             
             currentTime = timeFormat.format(now.time)
             currentDate = dateFormat.format(now.time)
             
-            delay(1000) // 每秒更新一次
+            delay(1000) // Update every second
         }
     }
     
@@ -88,7 +88,7 @@ fun HomeScreen(navController: NavController) {
                 )
             )
     ) {
-        // 時間顯示 - 放在右上角，不干擾主要內容
+        // Time display - top-right, non-intrusive
         Box(
             modifier = Modifier
                 .align(Alignment.TopEnd)
@@ -129,13 +129,13 @@ fun HomeScreen(navController: NavController) {
                 color = Color(0xFF1A237E)
             )
         }
-        // 恢復原本的 grid 位置
+        // Grid position restored
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
                 .align(Alignment.TopCenter)
-                .padding(top = 180.dp), // 恢復原本的 top padding
+                .padding(top = 180.dp), // Restore top padding
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             FeatureGrid(navController)
@@ -157,7 +157,7 @@ fun TimeDisplay(currentTime: String, currentDate: String) {
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // 時間顯示 - 縮小字體
+            // Time - smaller font
             Text(
                 text = currentTime,
                 fontSize = 24.sp,
@@ -167,7 +167,7 @@ fun TimeDisplay(currentTime: String, currentDate: String) {
             
             Spacer(modifier = Modifier.height(4.dp))
             
-            // 日期顯示 - 縮小字體
+            // Date - smaller font
             Text(
                 text = currentDate,
                 fontSize = 12.sp,

@@ -10,6 +10,8 @@ import com.example.myapplication.ScheduleDao
 import com.example.myapplication.data.MedicationEntity
 import com.example.myapplication.data.MedicationDao
 import com.example.myapplication.MealRecord
+import com.example.myapplication.MemoryEntity
+import com.example.myapplication.MemoryDao
 import com.example.myapplication.MealDao
 import java.util.Date
 
@@ -62,9 +64,25 @@ val MIGRATION_3_4 = object : Migration(3, 4) {
     }
 }
 
+val MIGRATION_4_5 = object : Migration(4, 5) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS memories (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                uri TEXT NOT NULL,
+                title TEXT,
+                description TEXT,
+                createdAt INTEGER NOT NULL
+            )
+            """
+        )
+    }
+}
+
 @Database(
-    entities = [ScheduleEntity::class, MedicationEntity::class, MealRecord::class],
-    version = 4,
+    entities = [ScheduleEntity::class, MedicationEntity::class, MealRecord::class, MemoryEntity::class],
+    version = 5,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -72,6 +90,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun scheduleDao(): ScheduleDao
     abstract fun medicationDao(): MedicationDao
     abstract fun mealDao(): MealDao
+    abstract fun memoryDao(): MemoryDao
 }
 
 class Converters {

@@ -49,20 +49,20 @@ fun FeatureButton(feature: FeatureDestination, onClick: () -> Unit) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Canvas(modifier = Modifier.size(40.dp)) {
                 when (feature.iconType) {
-                    0 -> drawCircle(Color(0xFF007AFF)) // 藍圓
-                    1 -> drawRect(Color(0xFF34C759)) // 綠方
+                    0 -> drawCircle(Color(0xFF007AFF)) // blue circle
+                    1 -> drawRect(Color(0xFF34C759)) // green square
                     2 -> drawPath(androidx.compose.ui.graphics.Path().apply {
                         moveTo(size.width/2, 0f)
                         lineTo(size.width, size.height)
                         lineTo(0f, size.height)
                         close()
-                    }, Color(0xFFFF9500)) // 橘三角
-                    3 -> drawStar(Color(0xFFFF2D55)) // 粉星
-                    4 -> drawHeart(Color(0xFFAF52DE)) // 紫心
-                    5 -> drawOval(Color(0xFF5AC8FA)) // 藍橢圓
-                    6 -> drawDiamond(Color(0xFFFFCC00)) // 黃菱形
-                    7 -> drawHexagon(Color(0xFF5856D6)) // 深紫六角
-                    8 -> drawSemiCircle(Color(0xFFFF3B30)) // 紅半圓
+                    }, Color(0xFFFF9500)) // orange triangle
+                    3 -> drawStar(Color(0xFFFF2D55)) // pink star
+                    4 -> drawHeart(Color(0xFFAF52DE)) // purple heart
+                    5 -> drawOval(Color(0xFF5AC8FA)) // blue oval
+                    6 -> drawDiamond(Color(0xFFFFCC00)) // yellow diamond
+                    7 -> drawHexagon(Color(0xFF5856D6)) // deep purple hexagon
+                    8 -> drawSemiCircle(Color(0xFFFF3B30)) // red semicircle
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -75,7 +75,7 @@ fun FeatureButton(feature: FeatureDestination, onClick: () -> Unit) {
     }
 }
 
-// 幾何圖形繪製輔助
+// Geometry draw helpers
 fun DrawScope.drawStar(color: Color) {
     val path = androidx.compose.ui.graphics.Path()
     val midX = size.width / 2
