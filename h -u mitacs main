@@ -1,0 +1,4 @@
+remote.origin.url https://github.com/Jieyuuuuu/Temi-DayMate
+remote.origin.fetch +refs/heads/*:refs/remotes/origin/*
+remote.mitacs.url https://github.com/saiqaaleem2016/Mitacs-2025.git
+remote.mitacs.fetch +refs/heads/*:refs/remotes/mitacs/*
